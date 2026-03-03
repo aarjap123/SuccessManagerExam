@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Success Manager Exam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-bg: #eef2ff;
+            --accent: #f59e0b;
+            --accent-light: #fbbf24;
+            --success: #10b981;
+            --success-bg: #ecfdf5;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --warning: #f59e0b;
+            --warning-bg: #fffbeb;
+            --sanjita: #ec4899;
+            --sanjita-bg: #fdf2f8;
+            --sanjita-light: #f9a8d4;
+            --bimal: #3b82f6;
+            --bimal-bg: #eff6ff;
+            --bimal-light: #93c5fd;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 50px -12px rgba(0,0,0,0.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background */
+        .bg-animation {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        .bg-animation::before, .bg-animation::after {
+            content: ''; position: absolute; border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+        .bg-animation::before {
+            width: 600px; height: 600px; background: rgba(255,255,255,0.05);
+            top: -200px; right: -100px;
+        }
+        .bg-animation::after {
+            width: 400px; height: 400px; background: rgba(255,255,255,0.03);
+            bottom: -100px; left: -100px; animation-delay: -10s; animation-duration: 25s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(5deg); }
+            66% { transform: translateY(20px) rotate(-3deg); }
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+            color: white; padding: 28px 30px 24px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.3) 0%, transparent 60%);
+            animation: headerGlow 8s ease-in-out infinite alternate;
+        }
+        @keyframes headerGlow { 0% { transform: translate(0,0); } 100% { transform: translate(5%,2%); } }
+        .header-content { position: relative; z-index: 1; }
+        .header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+        .header p { font-size: 1rem; opacity: 0.75; font-weight: 400; }
+
+        /* Container */
+        .container { max-width: 900px; margin: 0 auto; padding: 25px 20px 40px; }
+
+        /* Status bar */
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; border-radius: 12px; margin-bottom: 20px;
+            background: white; border: 1px solid var(--gray-200); box-shadow: var(--shadow);
+        }
+        .status-indicator {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.85rem; font-weight: 600; color: var(--gray-600);
+        }
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%; background: var(--success);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+        }
+        .status-time { font-size: 0.8rem; color: var(--gray-400); font-weight: 500; }
+
+        /* Stats row */
+        .stats-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white; border-radius: 14px; padding: 20px 16px;
+            text-align: center; border: 1px solid var(--gray-200); box-shadow: var(--shadow);
+        }
+        .stat-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .stat-value {
+            font-size: 1.8rem; font-weight: 900; font-family: 'JetBrains Mono', monospace;
+            color: var(--gray-900); line-height: 1.2;
+        }
+        .stat-label { font-size: 0.78rem; font-weight: 600; color: var(--gray-500); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Card */
+        .card {
+            background: white; border-radius: var(--radius); box-shadow: var(--shadow-lg);
+            padding: 30px; margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.04);
+        }
+        .card h2 {
+            color: var(--gray-900); margin-bottom: 20px; font-size: 1.3rem;
+            font-weight: 800; letter-spacing: -0.3px;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: linear-gradient(135deg, #1e1b4b, #312e81, #4338ca);
+            border-radius: var(--radius); padding: 30px; text-align: center;
+            color: white; margin-bottom: 20px; position: relative; overflow: hidden;
+        }
+        .leaderboard::before {
+            content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+        }
+        .leaderboard h2 { color: white; position: relative; font-size: 1.3rem; margin-bottom: 16px; }
+        .leaderboard-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px; position: relative;
+        }
+        .lb-card {
+            background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s;
+        }
+        .lb-card .lb-rank { font-size: 1.5rem; margin-bottom: 4px; }
+        .lb-card .lb-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+        .lb-card .lb-score { font-size: 2.2rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+        .lb-card .lb-pct { font-size: 0.85rem; opacity: 0.7; margin-top: 2px; }
+        .lb-card.winner {
+            background: rgba(255,255,255,0.18); border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(245,158,11,0.3);
+        }
+        .lb-card.waiting {
+            opacity: 0.5;
+        }
+        .lb-card.waiting .lb-score { font-size: 1rem; opacity: 0.6; }
+        .winner-banner {
+            position: relative; margin-top: 16px; font-size: 1.1rem;
+            font-weight: 700; color: var(--accent-light);
+        }
+
+        /* User detail cards */
+        .user-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .user-card {
+            border-radius: 14px; padding: 24px; border: 2px solid var(--gray-200);
+            background: white; transition: all 0.3s;
+        }
+        .user-card.sanjita-card { border-color: rgba(236,72,153,0.3); }
+        .user-card.bimal-card { border-color: rgba(59,130,246,0.3); }
+        .user-card.waiting-card { opacity: 0.5; border-style: dashed; }
+        .user-card-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+        }
+        .user-avatar {
+            width: 44px; height: 44px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 1.1rem;
+            font-weight: 900; color: white; flex-shrink: 0;
+        }
+        .sanjita-card .user-avatar { background: linear-gradient(135deg, var(--sanjita), #db2777); }
+        .bimal-card .user-avatar { background: linear-gradient(135deg, var(--bimal), #2563eb); }
+        .user-card-name { font-size: 1.1rem; font-weight: 800; color: var(--gray-900); }
+        .user-card-time { font-size: 0.78rem; color: var(--gray-400); font-weight: 500; }
+        .user-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .user-detail {
+            background: var(--gray-50); border-radius: 10px; padding: 12px;
+            text-align: center;
+        }
+        .user-detail .ud-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--gray-400); margin-bottom: 2px; }
+        .user-detail .ud-value { font-size: 1.15rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--gray-800); }
+        .user-detail.highlight { background: var(--primary-bg); }
+        .user-detail.highlight .ud-value { color: var(--primary); }
+        .waiting-message {
+            text-align: center; padding: 30px 10px; color: var(--gray-400);
+            font-weight: 600; font-size: 0.95rem;
+        }
+        .waiting-message .waiting-icon { font-size: 2rem; margin-bottom: 8px; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px;
+            border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700;
+            font-family: inherit; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            position: relative; overflow: hidden; text-decoration: none;
+        }
+        .btn::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(rgba(255,255,255,0.2), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .btn:hover::after { opacity: 1; }
+        .btn:active { transform: scale(0.97); }
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white; box-shadow: 0 4px 14px rgba(239,68,68,0.35);
+        }
+        .btn-danger:hover { box-shadow: 0 6px 20px rgba(239,68,68,0.45); transform: translateY(-1px); }
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white; box-shadow: 0 4px 14px rgba(16,185,129,0.35);
+        }
+        .btn-success:hover { box-shadow: 0 6px 20px rgba(16,185,129,0.45); transform: translateY(-1px); }
+        .btn-secondary {
+            background: var(--gray-100); color: var(--gray-700);
+            border: 2px solid var(--gray-200); box-shadow: none;
+        }
+        .btn-secondary:hover { background: var(--gray-200); }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+        }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(99,102,241,0.45); transform: translateY(-1px); }
+
+        .actions-bar {
+            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center; padding: 50px 20px;
+        }
+        .empty-state .empty-icon { font-size: 3rem; margin-bottom: 14px; }
+        .empty-state h3 { font-size: 1.2rem; font-weight: 800; color: var(--gray-700); margin-bottom: 8px; }
+        .empty-state p { font-size: 0.9rem; color: var(--gray-400); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+            opacity: 0; visibility: hidden; transition: all 0.3s;
+        }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal {
+            background: white; border-radius: var(--radius); padding: 36px; max-width: 440px;
+            width: 100%; text-align: center; transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); box-shadow: var(--shadow-xl);
+        }
+        .modal-overlay.show .modal { transform: scale(1); }
+        .modal-icon {
+            width: 60px; height: 60px; border-radius: 50%; display: inline-flex;
+            align-items: center; justify-content: center; font-size: 1.6rem;
+            margin-bottom: 18px; background: var(--danger-bg);
+        }
+        .modal h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--gray-900); }
+        .modal p { font-size: 0.9rem; color: var(--gray-500); margin-bottom: 24px; line-height: 1.5; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--gray-900); color: white; padding: 14px 28px; border-radius: 12px;
+            font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-xl); z-index: 10000;
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); display: flex; align-items: center; gap: 10px;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .leaderboard-grid { grid-template-columns: 1fr; }
+            .user-cards { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.5rem; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-animation"></div>
+
+<div class="header">
+    <div class="header-content">
+        <h1>Admin Dashboard</h1>
+        <p>Live Exam Monitoring &amp; Results</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Live — polling every 3s</span>
+        </div>
+        <div class="status-time" id="lastUpdated">Last updated: —</div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon">&#x1F4E5;</div>
+            <div class="stat-value" id="statSubmissions">0</div>
+            <div class="stat-label">Submissions</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">&#x1F3C6;</div>
+            <div class="stat-value" id="statHighScore">—</div>
+            <div class="stat-label">High Score</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">&#x1F4CA;</div>
+            <div class="stat-value" id="statAvgScore">—</div>
+            <div class="stat-label">Avg Score</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">&#x23F1;</div>
+            <div class="stat-value" id="statAvgTime">—</div>
+            <div class="stat-label">Avg Time</div>
+        </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="leaderboard" id="leaderboardSection">
+        <h2>&#x1F3C6; Leaderboard</h2>
+        <div class="leaderboard-grid" id="leaderboardGrid"></div>
+        <div class="winner-banner" id="winnerBanner"></div>
+    </div>
+
+    <!-- User Detail Cards -->
+    <div class="user-cards" id="userCards"></div>
+
+    <!-- Actions -->
+    <div class="actions-bar">
+        <button class="btn btn-danger" onclick="confirmReset()">&#x1F5D1; Reset All Results</button>
+        <button class="btn btn-success" onclick="exportCSV()">&#x1F4E5; Export CSV</button>
+        <a href="/" class="btn btn-secondary">&#x2190; Back to Exam</a>
+    </div>
+</div>
+
+<!-- Reset Confirmation Modal -->
+<div class="modal-overlay" id="resetModal">
+    <div class="modal">
+        <div class="modal-icon">&#x1F5D1;&#xFE0F;</div>
+        <h3>Reset All Results?</h3>
+        <p>This will permanently delete all exam submissions. Both users will need to re-take the exam. This cannot be undone.</p>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeResetModal()">Cancel</button>
+            <button class="btn btn-danger" onclick="doReset()">Reset Everything</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let pollTimer = null;
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function formatTime(sec) {
+    if (sec == null) return '—';
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return m === 0 ? s + 's' : m + 'm ' + s + 's';
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// --- Polling ---
+async function fetchData() {
+    try {
+        const res = await fetch('/api/submissions');
+        const data = await res.json();
+        render(data);
+        document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    } catch (e) {
+        document.getElementById('lastUpdated').textContent = 'Connection error';
+    }
+}
+
+function startPolling() {
+    fetchData();
+    pollTimer = setInterval(fetchData, 3000);
+}
+
+// --- Render ---
+function render(data) {
+    const users = Object.keys(data);
+    const count = users.length;
+
+    // Stats
+    document.getElementById('statSubmissions').textContent = count + ' / 2';
+
+    if (count > 0) {
+        const scores = users.map(u => data[u].totalScore);
+        const maxes = users.map(u => data[u].maxScore);
+        const times = users.map(u => data[u].time);
+        const highScore = Math.max(...scores);
+        const highMax = maxes[scores.indexOf(highScore)];
+        const avgScore = Math.round(scores.reduce((a,b) => a+b, 0) / count);
+        const avgTime = Math.round(times.reduce((a,b) => a+b, 0) / count);
+
+        document.getElementById('statHighScore').textContent = highScore + '/' + highMax;
+        document.getElementById('statAvgScore').textContent = avgScore;
+        document.getElementById('statAvgTime').textContent = formatTime(avgTime);
+    } else {
+        document.getElementById('statHighScore').textContent = '—';
+        document.getElementById('statAvgScore').textContent = '—';
+        document.getElementById('statAvgTime').textContent = '—';
+    }
+
+    // Leaderboard
+    renderLeaderboard(data);
+
+    // User cards
+    renderUserCards(data);
+}
+
+function renderLeaderboard(data) {
+    const grid = document.getElementById('leaderboardGrid');
+    const banner = document.getElementById('winnerBanner');
+    let html = '';
+
+    ['sanjita', 'bimal'].forEach(u => {
+        const s = data[u];
+        if (s) {
+            const pct = Math.round((s.totalScore / s.maxScore) * 100);
+            const isWinner = data.sanjita && data.bimal && s.totalScore > data[u === 'sanjita' ? 'bimal' : 'sanjita'].totalScore;
+            html += `
+                <div class="lb-card ${isWinner ? 'winner' : ''}">
+                    <div class="lb-rank">${isWinner ? '&#x1F451;' : '&#x1F3AF;'}</div>
+                    <div class="lb-name">${capitalize(u)}</div>
+                    <div class="lb-score">${s.totalScore} / ${s.maxScore}</div>
+                    <div class="lb-pct">${pct}% &bull; ${formatTime(s.time)}</div>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="lb-card waiting">
+                    <div class="lb-rank">&#x23F3;</div>
+                    <div class="lb-name">${capitalize(u)}</div>
+                    <div class="lb-score">Waiting...</div>
+                    <div class="lb-pct">Not yet submitted</div>
+                </div>
+            `;
+        }
+    });
+
+    grid.innerHTML = html;
+
+    // Winner banner
+    if (data.sanjita && data.bimal) {
+        const sa = data.sanjita.totalScore;
+        const bi = data.bimal.totalScore;
+        if (sa > bi) {
+            banner.innerHTML = '&#x1F389; Sanjita wins by ' + (sa - bi) + ' points!';
+        } else if (bi > sa) {
+            banner.innerHTML = '&#x1F389; Bimal wins by ' + (bi - sa) + ' points!';
+        } else {
+            banner.innerHTML = '&#x1F91D; It\'s a tie!';
+        }
+    } else {
+        banner.innerHTML = '';
+    }
+}
+
+function renderUserCards(data) {
+    const container = document.getElementById('userCards');
+    let html = '';
+
+    ['sanjita', 'bimal'].forEach(u => {
+        const s = data[u];
+        const other = u === 'sanjita' ? 'bimal' : 'sanjita';
+        const avatarLetter = u === 'sanjita' ? 'S' : 'B';
+        const cardClass = u + '-card';
+
+        if (s) {
+            const pct = Math.round((s.totalScore / s.maxScore) * 100);
+            const ownPct = s.ownMaxPts > 0 ? Math.round((s.ownScore / s.ownMaxPts) * 100) : 0;
+            const otherPct = s.otherMaxPts > 0 ? Math.round((s.otherScore / s.otherMaxPts) * 100) : 0;
+            const submitted = new Date(s.submittedAt).toLocaleTimeString();
+
+            html += `
+                <div class="user-card ${cardClass}">
+                    <div class="user-card-header">
+                        <div class="user-avatar">${avatarLetter}</div>
+                        <div>
+                            <div class="user-card-name">${capitalize(u)}</div>
+                            <div class="user-card-time">Submitted at ${submitted}</div>
+                        </div>
+                    </div>
+                    <div class="user-detail-grid">
+                        <div class="user-detail highlight">
+                            <div class="ud-label">Total Score</div>
+                            <div class="ud-value">${s.totalScore} / ${s.maxScore}</div>
+                        </div>
+                        <div class="user-detail">
+                            <div class="ud-label">Overall</div>
+                            <div class="ud-value">${pct}%</div>
+                        </div>
+                        <div class="user-detail">
+                            <div class="ud-label">Own (1pt)</div>
+                            <div class="ud-value">${s.ownScore}/${s.ownMaxPts}</div>
+                        </div>
+                        <div class="user-detail">
+                            <div class="ud-label">${capitalize(other)}'s (2pt)</div>
+                            <div class="ud-value">${s.otherScore}/${s.otherMaxPts}</div>
+                        </div>
+                        <div class="user-detail">
+                            <div class="ud-label">Time</div>
+                            <div class="ud-value">${formatTime(s.time)}</div>
+                        </div>
+                        <div class="user-detail">
+                            <div class="ud-label">Cells Correct</div>
+                            <div class="ud-value">${s.ownCorrect + s.otherCorrect}/${s.ownTotal + s.otherTotal}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="user-card ${cardClass} waiting-card">
+                    <div class="user-card-header">
+                        <div class="user-avatar">${avatarLetter}</div>
+                        <div>
+                            <div class="user-card-name">${capitalize(u)}</div>
+                            <div class="user-card-time">Hasn't submitted yet</div>
+                        </div>
+                    </div>
+                    <div class="waiting-message">
+                        <div class="waiting-icon">&#x23F3;</div>
+                        Waiting for ${capitalize(u)} to submit...
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    container.innerHTML = html;
+}
+
+// --- Actions ---
+function confirmReset() {
+    document.getElementById('resetModal').classList.add('show');
+}
+
+function closeResetModal() {
+    document.getElementById('resetModal').classList.remove('show');
+}
+
+async function doReset() {
+    closeResetModal();
+    try {
+        await fetch('/api/submissions', { method: 'DELETE' });
+        showToast('&#x2705; All results have been reset');
+        fetchData();
+    } catch (e) {
+        showToast('&#x274C; Failed to reset');
+    }
+}
+
+function exportCSV() {
+    window.location.href = '/api/export';
+}
+
+// Start polling on load
+startPolling();
+</script>
+
+</body>
+</html>
