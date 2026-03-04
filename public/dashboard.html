@@ -268,10 +268,94 @@
         /* Score flash animation */
         @keyframes scoreFlash {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); color: var(--success); }
+            50% { transform: scale(1.15); }
             100% { transform: scale(1); }
         }
-        .score-changed { animation: scoreFlash 0.4s ease; }
+        .score-changed { animation: scoreFlash 0.5s ease; }
+
+        /* ===== HEAD-TO-HEAD RACE ===== */
+        .race-section {
+            background: white; border-radius: var(--radius); padding: 28px 30px;
+            margin-bottom: 24px; box-shadow: var(--shadow-lg); border: 1px solid rgba(0,0,0,0.04);
+        }
+        .race-section h2 { font-size: 1.4rem; font-weight: 800; color: var(--gray-900); margin-bottom: 20px; text-align: center; }
+        .race-lane {
+            display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+        }
+        .race-lane:last-child { margin-bottom: 0; }
+        .race-avatar {
+            width: 42px; height: 42px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 1rem;
+            font-weight: 900; color: white; flex-shrink: 0;
+        }
+        .race-avatar.sanjita-av { background: linear-gradient(135deg, var(--sanjita), #db2777); }
+        .race-avatar.bimal-av { background: linear-gradient(135deg, var(--bimal), #2563eb); }
+        .race-name { width: 80px; font-weight: 800; font-size: 1rem; color: var(--gray-800); flex-shrink: 0; }
+        .race-track {
+            flex: 1; height: 36px; background: var(--gray-100); border-radius: 18px;
+            overflow: hidden; position: relative; border: 2px solid var(--gray-200);
+        }
+        .race-fill {
+            height: 100%; border-radius: 16px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+            display: flex; align-items: center; justify-content: flex-end; padding-right: 12px;
+            min-width: 40px; position: relative;
+        }
+        .race-fill.sanjita-race {
+            background: linear-gradient(90deg, var(--sanjita), #f472b6, var(--sanjita-light));
+            background-size: 200% 100%; animation: raceShimmer 2s ease infinite;
+        }
+        .race-fill.bimal-race {
+            background: linear-gradient(90deg, var(--bimal), #60a5fa, var(--bimal-light));
+            background-size: 200% 100%; animation: raceShimmer 2s ease infinite;
+        }
+        @keyframes raceShimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .race-score-label {
+            font-family: 'JetBrains Mono', monospace; font-weight: 900; font-size: 0.95rem;
+            color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.3); white-space: nowrap;
+        }
+        .race-pts {
+            font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 1.1rem;
+            color: var(--gray-700); width: 50px; text-align: right; flex-shrink: 0;
+        }
+        .race-empty { color: var(--gray-400); font-weight: 600; font-size: 0.9rem; text-align: center; padding: 10px; }
+
+        /* ===== CONFETTI CANVAS ===== */
+        #confettiCanvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999;
+        }
+
+        /* ===== WINNER OVERLAY ===== */
+        .winner-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 9998;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: all 0.5s;
+        }
+        .winner-overlay.show { opacity: 1; visibility: visible; }
+        .winner-card {
+            background: linear-gradient(135deg, #1e1b4b, #312e81, #4338ca);
+            border-radius: 24px; padding: 50px 60px; text-align: center; color: white;
+            transform: scale(0.5); transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4); max-width: 500px;
+        }
+        .winner-overlay.show .winner-card { transform: scale(1); }
+        .winner-trophy { font-size: 5rem; margin-bottom: 16px; animation: trophyBounce 1s ease infinite; }
+        @keyframes trophyBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        .winner-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 8px; }
+        .winner-subtitle { font-size: 1.2rem; opacity: 0.8; margin-bottom: 24px; }
+        .winner-scores {
+            display: flex; justify-content: center; gap: 30px; margin-bottom: 24px;
+        }
+        .winner-score-item { text-align: center; }
+        .winner-score-name { font-size: 1rem; font-weight: 700; opacity: 0.7; margin-bottom: 4px; }
+        .winner-score-val { font-size: 2rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+        .winner-close {
+            background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3);
+            color: white; padding: 12px 30px; border-radius: 12px; font-size: 1rem;
+            font-weight: 700; cursor: pointer; transition: all 0.3s; font-family: inherit;
+        }
+        .winner-close:hover { background: rgba(255,255,255,0.3); }
 
         /* Buttons */
         .btn {
@@ -401,6 +485,12 @@
         <div class="winner-banner" id="winnerBanner"></div>
     </div>
 
+    <!-- Head-to-Head Race -->
+    <div class="race-section">
+        <h2>&#x1F3C1; Head-to-Head Race</h2>
+        <div id="raceContent"></div>
+    </div>
+
     <!-- User Detail Cards -->
     <div class="user-cards" id="userCards"></div>
 
@@ -425,12 +515,31 @@
     </div>
 </div>
 
+<canvas id="confettiCanvas"></canvas>
+
+<!-- Winner Overlay -->
+<div class="winner-overlay" id="winnerOverlay">
+    <div class="winner-card">
+        <div class="winner-trophy">&#x1F3C6;</div>
+        <div class="winner-title" id="winnerName"></div>
+        <div class="winner-subtitle" id="winnerSubtitle"></div>
+        <div class="winner-scores" id="winnerScores"></div>
+        <button class="winner-close" onclick="closeWinnerOverlay()">Close</button>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 let pollTimer = null;
 // Track previous scores for change detection
 let prevScores = { sanjita: null, bimal: null };
+// Track if winner was already shown
+let winnerShown = false;
+// Track displayed values for animated counters
+let displayedScores = { sanjita: 0, bimal: 0 };
+// Track live user start times for local ticking
+let liveTimers = { sanjita: null, bimal: null };
 
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -507,7 +616,17 @@ function render(submissions, liveScores) {
     }
 
     renderLeaderboard(submissions, liveScores);
+    renderRace(submissions, liveScores);
     renderUserCards(submissions, liveScores);
+    checkForWinner(submissions, liveScores);
+}
+
+function getDisplayElapsed(u, serverElapsed) {
+    const t = liveTimers[u];
+    if (t) {
+        return t.baseElapsed + Math.floor((Date.now() - t.syncedAt) / 1000);
+    }
+    return serverElapsed;
 }
 
 function renderLeaderboard(submissions, liveScores) {
@@ -517,6 +636,19 @@ function renderLeaderboard(submissions, liveScores) {
 
     const sData = getUserData('sanjita', submissions, liveScores);
     const bData = getUserData('bimal', submissions, liveScores);
+
+    // Update live timers BEFORE rendering — only reset syncedAt when server elapsed changes
+    ['sanjita', 'bimal'].forEach(u => {
+        const d = u === 'sanjita' ? sData : bData;
+        if (d && d.status === 'live') {
+            const serverElapsed = d.elapsed || 0;
+            if (!liveTimers[u] || liveTimers[u].baseElapsed !== serverElapsed) {
+                liveTimers[u] = { baseElapsed: serverElapsed, syncedAt: Date.now() };
+            }
+        } else {
+            liveTimers[u] = null;
+        }
+    });
 
     ['sanjita', 'bimal'].forEach(u => {
         const d = u === 'sanjita' ? sData : bData;
@@ -533,13 +665,14 @@ function renderLeaderboard(submissions, liveScores) {
             prevScores[u] = d.totalScore;
 
             const progressPct = isLive && d.totalCells ? Math.round((d.cellsFilled / d.totalCells) * 100) : 0;
+            const displayTime = isLive ? getDisplayElapsed(u, d.elapsed) : d.time;
 
             html += `
                 <div class="lb-card ${isWinner ? 'winner' : ''} ${isLive ? 'live-card' : ''}">
                     <div class="lb-rank">${isWinner ? '&#x1F451;' : isLive ? '&#x270D;&#xFE0F;' : '&#x1F3AF;'}</div>
                     <div class="lb-name">${capitalize(u)}</div>
-                    <div class="lb-score ${scoreChanged ? 'score-changed' : ''}">${d.totalScore} / ${d.maxScore}</div>
-                    <div class="lb-pct">${pct}% ${isLive ? '&bull; ' + formatTime(d.elapsed) : '&bull; ' + formatTime(d.time)}</div>
+                    <div class="lb-score ${scoreChanged ? 'score-changed' : ''}"><span id="lbScore_${u}">${d.totalScore}</span> / ${d.maxScore}</div>
+                    <div class="lb-pct">${pct}% &bull; <span id="lbPct_${u}">${formatTime(displayTime)}</span></div>
                     <div class="lb-status-tag ${isLive ? 'live' : 'submitted'}">${isLive ? '&#x1F7E2; Typing Live' : '&#x2705; Submitted'}</div>
                     <div class="lb-cell-stats">
                         <span class="lb-cell-stat lb-cell-correct">&#x2705; ${isLive ? (d.cellsCorrect || 0) : (d.ownCorrect + d.otherCorrect)} correct</span>
@@ -569,6 +702,15 @@ function renderLeaderboard(submissions, liveScores) {
     });
 
     grid.innerHTML = html;
+
+    // Animate score counters
+    ['sanjita', 'bimal'].forEach(u => {
+        const d = u === 'sanjita' ? sData : bData;
+        if (d && displayedScores[u] !== d.totalScore) {
+            animateNumber('lbScore_' + u, d.totalScore);
+            displayedScores[u] = d.totalScore;
+        }
+    });
 
     // Winner banner (only when both submitted)
     if (sData && bData && sData.status === 'submitted' && bData.status === 'submitted') {
@@ -601,7 +743,7 @@ function renderUserCards(submissions, liveScores) {
             const pct = d.maxScore > 0 ? Math.round((d.totalScore / d.maxScore) * 100) : 0;
             const progressPct = isLive && d.totalCells ? Math.round((d.cellsFilled / d.totalCells) * 100) : 100;
             const timeLabel = isLive ? 'Elapsed' : 'Time';
-            const timeVal = isLive ? d.elapsed : d.time;
+            const timeVal = isLive ? getDisplayElapsed(u, d.elapsed) : d.time;
             const statusTag = isLive
                 ? '<span class="user-card-status live">&#x1F7E2; Live</span>'
                 : '<span class="user-card-status submitted">&#x2705; Done</span>';
@@ -637,7 +779,7 @@ function renderUserCards(submissions, liveScores) {
                         </div>
                         <div class="user-detail">
                             <div class="ud-label">${timeLabel}</div>
-                            <div class="ud-value">${formatTime(timeVal)}</div>
+                            <div class="ud-value" id="ucTime_${u}">${formatTime(timeVal)}</div>
                         </div>
                         <div class="user-detail">
                             <div class="ud-label">Cells Correct</div>
@@ -677,6 +819,149 @@ function renderUserCards(submissions, liveScores) {
     container.innerHTML = html;
 }
 
+// --- Head-to-Head Race ---
+function renderRace(submissions, liveScores) {
+    const container = document.getElementById('raceContent');
+    const sData = getUserData('sanjita', submissions, liveScores);
+    const bData = getUserData('bimal', submissions, liveScores);
+
+    if (!sData && !bData) {
+        container.innerHTML = '<div class="race-empty">Waiting for users to start the exam...</div>';
+        return;
+    }
+
+    const maxPossible = 243;
+    let html = '';
+
+    [{ u: 'sanjita', d: sData, av: 'S' }, { u: 'bimal', d: bData, av: 'B' }].forEach(({ u, d, av }) => {
+        const score = d ? d.totalScore : 0;
+        const pct = Math.max((score / maxPossible) * 100, 2);
+        html += `
+            <div class="race-lane">
+                <div class="race-avatar ${u}-av">${av}</div>
+                <div class="race-name">${capitalize(u)}</div>
+                <div class="race-track">
+                    <div class="race-fill ${u}-race" style="width:${pct}%">
+                        <span class="race-score-label">${score > 0 ? score : ''}</span>
+                    </div>
+                </div>
+                <div class="race-pts">${score}</div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+// --- Animated Score Counter ---
+function animateNumber(elementId, target) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const current = parseInt(el.textContent) || 0;
+    if (current === target) return;
+    const range = target - current;
+    const duration = 600;
+    const startTime = performance.now();
+    function update(time) {
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(current + range * eased);
+        if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+
+// --- Confetti ---
+function launchConfetti() {
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const colors = ['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#14b8a6','#fbbf24','#f472b6'];
+    const particles = [];
+    for (let i = 0; i < 200; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: -20 - Math.random() * 400,
+            w: 6 + Math.random() * 8,
+            h: 4 + Math.random() * 6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vx: (Math.random() - 0.5) * 6,
+            vy: 3 + Math.random() * 5,
+            rotation: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 12,
+            opacity: 1
+        });
+    }
+    let frame = 0;
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+            if (p.opacity <= 0) return;
+            alive = true;
+            p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.rotation += p.rotSpeed;
+            if (p.y > canvas.height - 50) p.opacity -= 0.02;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+        });
+        frame++;
+        if (alive && frame < 400) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    animate();
+}
+
+// --- Winner Overlay ---
+function checkForWinner(submissions, liveScores) {
+    if (winnerShown) return;
+    if (!submissions.sanjita || !submissions.bimal) return;
+
+    winnerShown = true;
+    const sa = submissions.sanjita;
+    const bi = submissions.bimal;
+
+    setTimeout(() => {
+        launchConfetti();
+
+        let winnerName, subtitle;
+        if (sa.totalScore > bi.totalScore) {
+            winnerName = 'Sanjita Wins!';
+            subtitle = 'By ' + (sa.totalScore - bi.totalScore) + ' points!';
+        } else if (bi.totalScore > sa.totalScore) {
+            winnerName = 'Bimal Wins!';
+            subtitle = 'By ' + (bi.totalScore - sa.totalScore) + ' points!';
+        } else {
+            winnerName = "It's a Tie!";
+            subtitle = 'Both scored equally!';
+        }
+
+        document.getElementById('winnerName').textContent = winnerName;
+        document.getElementById('winnerSubtitle').textContent = subtitle;
+        document.getElementById('winnerScores').innerHTML = `
+            <div class="winner-score-item">
+                <div class="winner-score-name">Sanjita</div>
+                <div class="winner-score-val">${sa.totalScore}/${sa.maxScore}</div>
+            </div>
+            <div class="winner-score-item">
+                <div class="winner-score-name">Bimal</div>
+                <div class="winner-score-val">${bi.totalScore}/${bi.maxScore}</div>
+            </div>
+        `;
+        document.getElementById('winnerOverlay').classList.add('show');
+    }, 500);
+}
+
+function closeWinnerOverlay() {
+    document.getElementById('winnerOverlay').classList.remove('show');
+}
+
 // --- Actions ---
 function confirmReset() {
     document.getElementById('resetModal').classList.add('show');
@@ -690,6 +975,8 @@ async function doReset() {
     closeResetModal();
     try {
         await fetch('/api/submissions', { method: 'DELETE' });
+        winnerShown = false;
+        displayedScores = { sanjita: 0, bimal: 0 };
         showToast('&#x2705; All results have been reset');
         fetchData();
     } catch (e) {
@@ -701,8 +988,29 @@ function exportCSV() {
     window.location.href = '/api/export';
 }
 
+// --- Live Timer Tick (every second) ---
+function tickLiveTimers() {
+    ['sanjita', 'bimal'].forEach(u => {
+        const t = liveTimers[u];
+        if (!t) return;
+        const now = Date.now();
+        const elapsedSec = t.baseElapsed + Math.floor((now - t.syncedAt) / 1000);
+        // Update leaderboard time
+        const lbPct = document.getElementById('lbPct_' + u);
+        if (lbPct) {
+            lbPct.textContent = formatTime(elapsedSec);
+        }
+        // Update user card time
+        const ucTime = document.getElementById('ucTime_' + u);
+        if (ucTime) {
+            ucTime.textContent = formatTime(elapsedSec);
+        }
+    });
+}
+
 // Start polling on load
 startPolling();
+setInterval(tickLiveTimers, 1000);
 </script>
 
 </body>
