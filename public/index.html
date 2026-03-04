@@ -47,12 +47,17 @@
             color: var(--gray-800);
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
         /* ===== ANIMATED BACKGROUND ===== */
         .bg-animation {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:
+                radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px),
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: 24px 24px, 100% 100%;
             overflow: hidden;
         }
         .bg-animation::before, .bg-animation::after {
@@ -157,9 +162,21 @@
         }
         .scoring-item {
             background: var(--gray-50); border: 1px solid var(--gray-200);
-            border-radius: 12px; padding: 18px;
+            border-radius: 12px; padding: 18px; border-left: 4px solid var(--primary);
+            transition: all 0.3s; cursor: default;
         }
-        .scoring-item .s-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .scoring-item:nth-child(2) { border-left-color: var(--accent); }
+        .scoring-item:nth-child(3) { border-left-color: var(--danger); }
+        .scoring-item:nth-child(4) { border-left-color: var(--success); }
+        .scoring-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .scoring-item .s-icon {
+            font-size: 1.5rem; margin-bottom: 8px; width: 44px; height: 44px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 50%; background: linear-gradient(135deg, var(--primary-bg), #e0e7ff);
+        }
+        .scoring-item:nth-child(2) .s-icon { background: linear-gradient(135deg, var(--warning-bg), #fde68a); }
+        .scoring-item:nth-child(3) .s-icon { background: linear-gradient(135deg, var(--danger-bg), #fecaca); }
+        .scoring-item:nth-child(4) .s-icon { background: linear-gradient(135deg, var(--success-bg), #a7f3d0); }
         .scoring-item .s-title { font-weight: 700; font-size: 0.9rem; color: var(--gray-800); }
         .scoring-item .s-desc { font-size: 0.8rem; color: var(--gray-500); margin-top: 3px; }
 
@@ -168,30 +185,31 @@
             max-width: 500px; margin: 30px auto 0;
         }
         .login-card {
-            border: 3px solid var(--gray-200); border-radius: var(--radius);
+            border: 2px solid rgba(255,255,255,0.3); border-radius: var(--radius);
             padding: 30px 20px; text-align: center; cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
         .login-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            transform: scaleX(0); transition: transform 0.4s;
+            content: ''; position: absolute; inset: -2px; border-radius: var(--radius);
+            z-index: -1; opacity: 0; transition: opacity 0.4s;
         }
-        .login-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
-        .login-card:hover::before { transform: scaleX(1); }
+        .login-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-xl); }
+        .login-card:hover::before { opacity: 1; }
         .login-card:active { transform: scale(0.97); }
-        .login-card.sanjita-card { }
-        .login-card.sanjita-card::before { background: linear-gradient(90deg, var(--sanjita), var(--sanjita-light)); }
-        .login-card.sanjita-card:hover { border-color: var(--sanjita); background: var(--sanjita-bg); }
-        .login-card.bimal-card { }
-        .login-card.bimal-card::before { background: linear-gradient(90deg, var(--bimal), var(--bimal-light)); }
-        .login-card.bimal-card:hover { border-color: var(--bimal); background: var(--bimal-bg); }
+        .login-card.sanjita-card::before { background: linear-gradient(135deg, var(--sanjita), var(--sanjita-light), var(--sanjita)); background-size: 200% 200%; animation: gradBorder 3s linear infinite; }
+        .login-card.sanjita-card:hover { border-color: transparent; background: rgba(253,242,248,0.85); }
+        .login-card.bimal-card::before { background: linear-gradient(135deg, var(--bimal), var(--bimal-light), var(--bimal)); background-size: 200% 200%; animation: gradBorder 3s linear infinite; }
+        .login-card.bimal-card:hover { border-color: transparent; background: rgba(239,246,255,0.85); }
+        @keyframes gradBorder { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .login-avatar {
-            width: 70px; height: 70px; border-radius: 50%; display: inline-flex;
-            align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900;
+            width: 80px; height: 80px; border-radius: 50%; display: inline-flex;
+            align-items: center; justify-content: center; font-size: 2rem; font-weight: 900;
             color: white; margin-bottom: 14px;
         }
-        .sanjita-card .login-avatar { background: linear-gradient(135deg, var(--sanjita), #db2777); box-shadow: 0 6px 18px rgba(236,72,153,0.3); }
-        .bimal-card .login-avatar { background: linear-gradient(135deg, var(--bimal), #2563eb); box-shadow: 0 6px 18px rgba(59,130,246,0.3); }
+        .sanjita-card .login-avatar { background: linear-gradient(135deg, var(--sanjita), #db2777); box-shadow: 0 0 0 4px white, 0 0 0 7px var(--sanjita), 0 0 20px rgba(236,72,153,0.4); }
+        .bimal-card .login-avatar { background: linear-gradient(135deg, var(--bimal), #2563eb); box-shadow: 0 0 0 4px white, 0 0 0 7px var(--bimal), 0 0 20px rgba(59,130,246,0.4); }
         .login-card h3 { font-size: 1.3rem; font-weight: 800; color: var(--gray-900); margin-bottom: 4px; }
         .login-card p { font-size: 0.85rem; color: var(--gray-500); }
 
@@ -213,12 +231,12 @@
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white; box-shadow: 0 4px 14px rgba(99,102,241,0.35);
         }
-        .btn-primary:hover { box-shadow: 0 6px 20px rgba(99,102,241,0.45); transform: translateY(-1px); }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(99,102,241,0.45), 0 0 30px rgba(99,102,241,0.2); transform: translateY(-2px) scale(1.02); }
         .btn-success {
             background: linear-gradient(135deg, var(--success), #059669);
             color: white; box-shadow: 0 4px 14px rgba(16,185,129,0.35);
         }
-        .btn-success:hover { box-shadow: 0 6px 20px rgba(16,185,129,0.45); transform: translateY(-1px); }
+        .btn-success:hover { box-shadow: 0 6px 20px rgba(16,185,129,0.45), 0 0 30px rgba(16,185,129,0.2); transform: translateY(-2px) scale(1.02); }
         .btn-secondary {
             background: var(--gray-100); color: var(--gray-700);
             border: 2px solid var(--gray-200); box-shadow: none;
@@ -277,8 +295,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         .score-tracker-item {
-            display: flex; align-items: center; gap: 8px; padding: 10px 16px;
-            border-radius: 10px; font-weight: 700; font-size: 0.88rem;
+            display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+            border-radius: 50px; font-weight: 700; font-size: 0.88rem;
             flex: 1; min-width: 120px; transition: all 0.3s;
         }
         .score-tracker-item .st-icon { font-size: 1.1rem; }
@@ -286,11 +304,13 @@
             font-family: 'JetBrains Mono', monospace; font-size: 1.3rem;
             font-weight: 900; transition: all 0.3s;
         }
+        .score-tracker-item .st-num.changed { animation: numberPop 0.4s cubic-bezier(0.4,0,0.2,1); }
+        @keyframes numberPop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
         .score-tracker-item .st-label { font-size: 0.75rem; font-weight: 600; opacity: 0.8; }
-        .st-correct { background: var(--success-bg); color: #065f46; border: 1px solid rgba(16,185,129,0.2); }
-        .st-incorrect { background: var(--danger-bg); color: #991b1b; border: 1px solid rgba(239,68,68,0.2); }
-        .st-empty { background: var(--gray-50); color: var(--gray-500); border: 1px solid var(--gray-200); }
-        .st-points { background: var(--primary-bg); color: var(--primary-dark); border: 1px solid rgba(99,102,241,0.2); }
+        .st-correct { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #065f46; border: 1px solid rgba(16,185,129,0.25); }
+        .st-incorrect { background: linear-gradient(135deg, #fef2f2, #fecaca); color: #991b1b; border: 1px solid rgba(239,68,68,0.25); }
+        .st-empty { background: linear-gradient(135deg, var(--gray-50), #e5e7eb); color: var(--gray-500); border: 1px solid var(--gray-200); }
+        .st-points { background: linear-gradient(135deg, #eef2ff, #e0e7ff); color: var(--primary-dark); border: 1px solid rgba(99,102,241,0.25); }
 
         /* ===== SECTION HEADER ===== */
         .section-divider {
@@ -328,17 +348,18 @@
         /* ===== TABLE ===== */
         .table-wrapper {
             overflow-x: auto; border-radius: 12px; border: 1px solid var(--gray-200);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
         }
         table { width: 100%; border-collapse: collapse; }
         thead th {
-            background: var(--gray-900); color: white; padding: 14px 12px; text-align: left;
+            background: linear-gradient(135deg, var(--gray-900), #1e1b4b); color: white; padding: 14px 12px; text-align: left;
             font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
             position: sticky; top: 0; z-index: 10;
         }
         thead th:first-child { padding-left: 16px; }
         tbody tr { transition: all 0.2s; animation: rowIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
         tbody tr:nth-child(even) { background: var(--gray-50); }
-        tbody tr:hover { background: var(--primary-bg); }
+        tbody tr:hover { background: var(--primary-bg); box-shadow: inset 3px 0 0 var(--primary); }
         @keyframes rowIn { 0% { opacity: 0; transform: translateX(-10px); } 100% { opacity: 1; transform: translateX(0); } }
         tbody td {
             padding: 10px 12px; border-bottom: 1px solid var(--gray-100);
@@ -358,8 +379,9 @@
             width: 100%; padding: 9px 12px; border: 2px solid var(--gray-200);
             border-radius: 8px; font-size: 0.88rem; font-family: inherit;
             transition: all 0.3s; background: white;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
         }
-        .exam-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+        .exam-input:focus { outline: none; border-color: var(--primary); box-shadow: inset 0 1px 3px rgba(0,0,0,0.06), 0 0 0 3px rgba(99,102,241,0.12), 0 0 12px rgba(99,102,241,0.08); }
         .exam-input.correct { border-color: var(--success); background: var(--success-bg); color: #065f46; font-weight: 600; }
         .exam-input.incorrect { border-color: var(--danger); background: var(--danger-bg); color: #991b1b; }
         .correct-answer {
@@ -372,6 +394,19 @@
         .submit-area {
             text-align: center; margin-top: 30px; padding-top: 24px; border-top: 2px solid var(--gray-100);
         }
+        .submit-area .btn-success {
+            padding: 18px 50px; font-size: 1.1rem;
+            animation: submitGlow 2s ease-in-out infinite;
+        }
+        .submit-area .btn-success:hover {
+            animation: none;
+            box-shadow: 0 0 30px rgba(16,185,129,0.5), 0 6px 20px rgba(16,185,129,0.4);
+            transform: translateY(-2px) scale(1.03);
+        }
+        @keyframes submitGlow {
+            0%, 100% { box-shadow: 0 4px 14px rgba(16,185,129,0.35); }
+            50% { box-shadow: 0 4px 14px rgba(16,185,129,0.35), 0 0 25px rgba(16,185,129,0.3); }
+        }
         .submit-area p { font-size: 0.85rem; color: var(--gray-400); margin-top: 10px; }
 
         /* ===== RESULTS ===== */
@@ -381,6 +416,29 @@
         }
         .results-hero h2 { font-size: 1.4rem; margin-bottom: 24px; color: var(--gray-800); }
         .score-ring { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; }
+        .score-ring::after {
+            content: ''; position: absolute; inset: -8px; border-radius: 50%;
+            opacity: 0.4; z-index: -1; transition: all 1s;
+        }
+        .score-ring.glow-good::after { box-shadow: 0 0 30px var(--success), 0 0 60px rgba(16,185,129,0.2); }
+        .score-ring.glow-average::after { box-shadow: 0 0 30px var(--warning), 0 0 60px rgba(245,158,11,0.2); }
+        .score-ring.glow-poor::after { box-shadow: 0 0 30px var(--danger), 0 0 60px rgba(239,68,68,0.2); }
+        /* Sparkle dots for good scores */
+        .sparkle-dot {
+            position: absolute; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--success);
+        }
+        .sparkle-dot:nth-child(1) { animation: orbit 3s linear infinite; }
+        .sparkle-dot:nth-child(2) { animation: orbit 3s linear infinite 0.75s; }
+        .sparkle-dot:nth-child(3) { animation: orbit 3s linear infinite 1.5s; }
+        .sparkle-dot:nth-child(4) { animation: orbit 3s linear infinite 2.25s; }
+        @keyframes orbit {
+            0% { top: -4px; left: 50%; opacity: 1; }
+            25% { top: 50%; left: calc(100% + 4px); opacity: 0.8; }
+            50% { top: calc(100% + 4px); left: 50%; opacity: 1; }
+            75% { top: 50%; left: -4px; opacity: 0.8; }
+            100% { top: -4px; left: 50%; opacity: 1; }
+        }
         .score-ring svg { width: 180px; height: 180px; transform: rotate(-90deg); }
         .score-ring .ring-bg { fill: none; stroke: var(--gray-200); stroke-width: 10; }
         .score-ring .ring-fill {
@@ -409,8 +467,15 @@
         }
         .breakdown-card {
             border-radius: 14px; padding: 22px 18px; text-align: center;
-            border: 1px solid var(--gray-200);
+            border: 1px solid var(--gray-200); position: relative; overflow: hidden;
+            transition: all 0.3s; cursor: default;
         }
+        .breakdown-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 70% 20%, rgba(255,255,255,0.6) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .breakdown-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
         .breakdown-card.own-card { background: linear-gradient(135deg, #fdf2f8, white); border-color: rgba(236,72,153,0.2); }
         .breakdown-card.other-card { background: linear-gradient(135deg, #eff6ff, white); border-color: rgba(59,130,246,0.2); }
         .breakdown-card.total-card { background: linear-gradient(135deg, var(--primary-bg), white); border-color: rgba(99,102,241,0.2); }
@@ -1081,10 +1146,17 @@ function highlightCells() {
         checkAndCount("other_duration_" + i, row.duration, true, false, 2);
     });
 
-    document.getElementById('stCorrect').textContent = correct;
-    document.getElementById('stIncorrect').textContent = incorrect;
-    document.getElementById('stEmpty').textContent = empty;
-    document.getElementById('stPoints').textContent = points;
+    // Number pop animation on change
+    [['stCorrect', correct], ['stIncorrect', incorrect], ['stEmpty', empty], ['stPoints', points]].forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        const prev = el.textContent;
+        el.textContent = val;
+        if (prev !== String(val)) {
+            el.classList.remove('changed');
+            void el.offsetWidth; // force reflow
+            el.classList.add('changed');
+        }
+    });
 }
 
 function sendLiveScore() {
@@ -1300,6 +1372,20 @@ function showResults(user, other, ownResults, otherResults, totalScore, maxScore
     ringFill.className.baseVal = "ring-fill " + grade;
     ringFill.style.strokeDashoffset = circumference;
     setTimeout(() => { ringFill.style.strokeDashoffset = offset; }, 100);
+
+    // Score ring glow
+    const scoreRing = document.querySelector('.score-ring');
+    scoreRing.className = 'score-ring glow-' + grade;
+    // Remove old sparkle dots
+    scoreRing.querySelectorAll('.sparkle-dot').forEach(d => d.remove());
+    // Add sparkle dots for good scores
+    if (percent >= 70) {
+        for (let i = 0; i < 4; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'sparkle-dot';
+            scoreRing.appendChild(dot);
+        }
+    }
 
     animateNumber("scoreNum", 0, totalScore, 1200);
     document.getElementById("scoreMax").textContent = "out of " + maxScore;
