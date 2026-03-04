@@ -8,10 +8,26 @@ const PORT = 9090;
 // JSON body parsing
 app.use(express.json());
 
-// In-memory submissions store (keyed by username)
+// In-memory stores (keyed by username)
 const submissions = {};
+const liveScores = {};
 
 // --- API Endpoints ---
+
+// POST /api/live-score — real-time score updates while user is typing
+app.post('/api/live-score', (req, res) => {
+    const { user, totalScore, maxScore, ownScore, ownMaxPts, otherScore, otherMaxPts,
+            ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, elapsed } = req.body;
+    if (!user || !['sanjita', 'bimal'].includes(user)) {
+        return res.status(400).json({ error: 'Invalid user' });
+    }
+    liveScores[user] = {
+        user, totalScore, maxScore, ownScore, ownMaxPts, otherScore, otherMaxPts,
+        ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, elapsed,
+        updatedAt: new Date().toISOString()
+    };
+    res.json({ ok: true });
+});
 
 // POST /api/submit — store a user's scored results
 app.post('/api/submit', (req, res) => {
@@ -25,21 +41,22 @@ app.post('/api/submit', (req, res) => {
         ownCorrect, ownTotal, otherCorrect, otherTotal, time,
         submittedAt: new Date().toISOString()
     };
+    // Clear live score once submitted
+    delete liveScores[user];
     console.log(`[SUBMIT] ${user} — ${totalScore}/${maxScore} in ${time}s`);
     res.json({ ok: true });
 });
 
-// GET /api/submissions — return all submissions (used by dashboard polling)
+// GET /api/submissions — return all submissions + live scores
 app.get('/api/submissions', (req, res) => {
-    res.json(submissions);
+    res.json({ submissions, liveScores });
 });
 
 // DELETE /api/submissions — clear all submissions (reset)
 app.delete('/api/submissions', (req, res) => {
-    for (const key of Object.keys(submissions)) {
-        delete submissions[key];
-    }
-    console.log('[RESET] All submissions cleared');
+    for (const key of Object.keys(submissions)) { delete submissions[key]; }
+    for (const key of Object.keys(liveScores)) { delete liveScores[key]; }
+    console.log('[RESET] All submissions and live scores cleared');
     res.json({ ok: true });
 });
 

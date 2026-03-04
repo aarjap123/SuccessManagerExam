@@ -123,19 +123,9 @@
         .stat-icon { font-size: 1.5rem; margin-bottom: 6px; }
         .stat-value {
             font-size: 1.8rem; font-weight: 900; font-family: 'JetBrains Mono', monospace;
-            color: var(--gray-900); line-height: 1.2;
+            color: var(--gray-900); line-height: 1.2; transition: all 0.3s;
         }
         .stat-label { font-size: 0.78rem; font-weight: 600; color: var(--gray-500); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* Card */
-        .card {
-            background: white; border-radius: var(--radius); box-shadow: var(--shadow-lg);
-            padding: 30px; margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.04);
-        }
-        .card h2 {
-            color: var(--gray-900); margin-bottom: 20px; font-size: 1.3rem;
-            font-weight: 800; letter-spacing: -0.3px;
-        }
 
         /* Leaderboard */
         .leaderboard {
@@ -158,19 +148,38 @@
         }
         .lb-card .lb-rank { font-size: 1.5rem; margin-bottom: 4px; }
         .lb-card .lb-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
-        .lb-card .lb-score { font-size: 2.2rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+        .lb-card .lb-score { font-size: 2.2rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; transition: all 0.3s; }
         .lb-card .lb-pct { font-size: 0.85rem; opacity: 0.7; margin-top: 2px; }
+        .lb-card .lb-status-tag {
+            display: inline-block; padding: 3px 10px; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 700; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .lb-card .lb-status-tag.live { background: rgba(16,185,129,0.3); color: #6ee7b7; }
+        .lb-card .lb-status-tag.submitted { background: rgba(99,102,241,0.3); color: #c7d2fe; }
         .lb-card.winner {
             background: rgba(255,255,255,0.18); border-color: var(--accent);
             box-shadow: 0 0 20px rgba(245,158,11,0.3);
         }
-        .lb-card.waiting {
-            opacity: 0.5;
-        }
+        .lb-card.waiting { opacity: 0.5; }
         .lb-card.waiting .lb-score { font-size: 1rem; opacity: 0.6; }
+        .lb-card.live-card { border-color: rgba(16,185,129,0.4); }
         .winner-banner {
             position: relative; margin-top: 16px; font-size: 1.1rem;
             font-weight: 700; color: var(--accent-light);
+        }
+
+        /* Progress bar inside leaderboard cards */
+        .lb-progress { margin-top: 8px; }
+        .lb-progress-track {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.15);
+            border-radius: 3px; overflow: hidden;
+        }
+        .lb-progress-fill {
+            height: 100%; border-radius: 3px; transition: width 0.5s ease;
+            background: linear-gradient(90deg, #6ee7b7, #34d399);
+        }
+        .lb-progress-text {
+            font-size: 0.75rem; opacity: 0.6; margin-top: 4px;
         }
 
         /* User detail cards */
@@ -182,6 +191,9 @@
         .user-card.sanjita-card { border-color: rgba(236,72,153,0.3); }
         .user-card.bimal-card { border-color: rgba(59,130,246,0.3); }
         .user-card.waiting-card { opacity: 0.5; border-style: dashed; }
+        .user-card.live-active { border-style: solid; opacity: 1; }
+        .user-card.live-active.sanjita-card { border-color: var(--sanjita); box-shadow: 0 0 20px rgba(236,72,153,0.15); }
+        .user-card.live-active.bimal-card { border-color: var(--bimal); box-shadow: 0 0 20px rgba(59,130,246,0.15); }
         .user-card-header {
             display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
         }
@@ -194,20 +206,61 @@
         .bimal-card .user-avatar { background: linear-gradient(135deg, var(--bimal), #2563eb); }
         .user-card-name { font-size: 1.1rem; font-weight: 800; color: var(--gray-900); }
         .user-card-time { font-size: 0.78rem; color: var(--gray-400); font-weight: 500; }
+        .user-card-status {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+            margin-left: 6px; vertical-align: middle;
+        }
+        .user-card-status.live { background: var(--success-bg); color: var(--success); }
+        .user-card-status.submitted { background: var(--primary-bg); color: var(--primary); }
         .user-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .user-detail {
             background: var(--gray-50); border-radius: 10px; padding: 12px;
-            text-align: center;
+            text-align: center; transition: all 0.3s;
         }
         .user-detail .ud-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--gray-400); margin-bottom: 2px; }
-        .user-detail .ud-value { font-size: 1.15rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--gray-800); }
+        .user-detail .ud-value { font-size: 1.15rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--gray-800); transition: all 0.3s; }
         .user-detail.highlight { background: var(--primary-bg); }
         .user-detail.highlight .ud-value { color: var(--primary); }
+
+        /* Progress bar in user card */
+        .user-progress { margin-top: 12px; }
+        .user-progress-label {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 6px;
+        }
+        .user-progress-label span { font-size: 0.75rem; font-weight: 600; color: var(--gray-500); }
+        .user-progress-label .up-pct { font-family: 'JetBrains Mono', monospace; color: var(--primary); font-weight: 700; }
+        .user-progress-track {
+            width: 100%; height: 8px; background: var(--gray-200);
+            border-radius: 4px; overflow: hidden;
+        }
+        .user-progress-fill {
+            height: 100%; border-radius: 4px; transition: width 0.5s ease;
+            position: relative;
+        }
+        .user-progress-fill.sanjita-fill { background: linear-gradient(90deg, var(--sanjita), var(--sanjita-light)); }
+        .user-progress-fill.bimal-fill { background: linear-gradient(90deg, var(--bimal), var(--bimal-light)); }
+        .user-progress-fill::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
         .waiting-message {
             text-align: center; padding: 30px 10px; color: var(--gray-400);
             font-weight: 600; font-size: 0.95rem;
         }
         .waiting-message .waiting-icon { font-size: 2rem; margin-bottom: 8px; }
+
+        /* Score flash animation */
+        @keyframes scoreFlash {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: var(--success); }
+            100% { transform: scale(1); }
+        }
+        .score-changed { animation: scoreFlash 0.4s ease; }
 
         /* Buttons */
         .btn {
@@ -238,23 +291,10 @@
             border: 2px solid var(--gray-200); box-shadow: none;
         }
         .btn-secondary:hover { background: var(--gray-200); }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; box-shadow: 0 4px 14px rgba(99,102,241,0.35);
-        }
-        .btn-primary:hover { box-shadow: 0 6px 20px rgba(99,102,241,0.45); transform: translateY(-1px); }
 
         .actions-bar {
             display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
         }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center; padding: 50px 20px;
-        }
-        .empty-state .empty-icon { font-size: 3rem; margin-bottom: 14px; }
-        .empty-state h3 { font-size: 1.2rem; font-weight: 800; color: var(--gray-700); margin-bottom: 8px; }
-        .empty-state p { font-size: 0.9rem; color: var(--gray-400); }
 
         /* Modal */
         .modal-overlay {
@@ -294,7 +334,6 @@
             .leaderboard-grid { grid-template-columns: 1fr; }
             .user-cards { grid-template-columns: 1fr; }
             .header h1 { font-size: 1.5rem; }
-            .card { padding: 20px; }
         }
     </style>
 </head>
@@ -315,7 +354,7 @@
     <div class="status-bar">
         <div class="status-indicator">
             <div class="status-dot"></div>
-            <span>Live — polling every 3s</span>
+            <span>Live — polling every 2s</span>
         </div>
         <div class="status-time" id="lastUpdated">Last updated: —</div>
     </div>
@@ -328,14 +367,14 @@
             <div class="stat-label">Submissions</div>
         </div>
         <div class="stat-card">
+            <div class="stat-icon">&#x1F4DD;</div>
+            <div class="stat-value" id="statActive">0</div>
+            <div class="stat-label">Taking Exam</div>
+        </div>
+        <div class="stat-card">
             <div class="stat-icon">&#x1F3C6;</div>
             <div class="stat-value" id="statHighScore">—</div>
             <div class="stat-label">High Score</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">&#x1F4CA;</div>
-            <div class="stat-value" id="statAvgScore">—</div>
-            <div class="stat-label">Avg Score</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">&#x23F1;</div>
@@ -346,7 +385,7 @@
 
     <!-- Leaderboard -->
     <div class="leaderboard" id="leaderboardSection">
-        <h2>&#x1F3C6; Leaderboard</h2>
+        <h2>&#x1F3C6; Live Scoreboard</h2>
         <div class="leaderboard-grid" id="leaderboardGrid"></div>
         <div class="winner-banner" id="winnerBanner"></div>
     </div>
@@ -367,7 +406,7 @@
     <div class="modal">
         <div class="modal-icon">&#x1F5D1;&#xFE0F;</div>
         <h3>Reset All Results?</h3>
-        <p>This will permanently delete all exam submissions. Both users will need to re-take the exam. This cannot be undone.</p>
+        <p>This will permanently delete all exam submissions and live scores. Both users will need to re-take the exam. This cannot be undone.</p>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeResetModal()">Cancel</button>
             <button class="btn btn-danger" onclick="doReset()">Reset Everything</button>
@@ -379,6 +418,8 @@
 
 <script>
 let pollTimer = null;
+// Track previous scores for change detection
+let prevScores = { sanjita: null, bimal: null };
 
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -396,12 +437,12 @@ function showToast(msg) {
     setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// --- Polling ---
+// --- Polling (every 2s for snappier live updates) ---
 async function fetchData() {
     try {
         const res = await fetch('/api/submissions');
         const data = await res.json();
-        render(data);
+        render(data.submissions || {}, data.liveScores || {});
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
     } catch (e) {
         document.getElementById('lastUpdated').textContent = 'Connection error';
@@ -410,67 +451,103 @@ async function fetchData() {
 
 function startPolling() {
     fetchData();
-    pollTimer = setInterval(fetchData, 3000);
+    pollTimer = setInterval(fetchData, 2000);
+}
+
+// Get effective data for a user: submitted data takes priority, then live, then null
+function getUserData(u, submissions, liveScores) {
+    if (submissions[u]) return { ...submissions[u], status: 'submitted' };
+    if (liveScores[u]) return { ...liveScores[u], status: 'live' };
+    return null;
 }
 
 // --- Render ---
-function render(data) {
-    const users = Object.keys(data);
-    const count = users.length;
+function render(submissions, liveScores) {
+    const subCount = Object.keys(submissions).length;
+    const liveCount = Object.keys(liveScores).length;
 
     // Stats
-    document.getElementById('statSubmissions').textContent = count + ' / 2';
+    document.getElementById('statSubmissions').textContent = subCount + ' / 2';
+    document.getElementById('statActive').textContent = liveCount;
 
-    if (count > 0) {
-        const scores = users.map(u => data[u].totalScore);
-        const maxes = users.map(u => data[u].maxScore);
-        const times = users.map(u => data[u].time);
-        const highScore = Math.max(...scores);
-        const highMax = maxes[scores.indexOf(highScore)];
-        const avgScore = Math.round(scores.reduce((a,b) => a+b, 0) / count);
-        const avgTime = Math.round(times.reduce((a,b) => a+b, 0) / count);
+    // Collect all scores (submitted + live) for stats
+    const allData = [];
+    ['sanjita', 'bimal'].forEach(u => {
+        const d = getUserData(u, submissions, liveScores);
+        if (d) allData.push(d);
+    });
 
-        document.getElementById('statHighScore').textContent = highScore + '/' + highMax;
-        document.getElementById('statAvgScore').textContent = avgScore;
-        document.getElementById('statAvgTime').textContent = formatTime(avgTime);
+    if (allData.length > 0) {
+        const scores = allData.map(d => d.totalScore);
+        const maxes = allData.map(d => d.maxScore);
+        const highIdx = scores.indexOf(Math.max(...scores));
+        document.getElementById('statHighScore').textContent = scores[highIdx] + '/' + maxes[highIdx];
+
+        const submittedData = allData.filter(d => d.status === 'submitted');
+        if (submittedData.length > 0) {
+            const avgTime = Math.round(submittedData.reduce((a,d) => a + d.time, 0) / submittedData.length);
+            document.getElementById('statAvgTime').textContent = formatTime(avgTime);
+        } else {
+            document.getElementById('statAvgTime').textContent = '—';
+        }
     } else {
         document.getElementById('statHighScore').textContent = '—';
-        document.getElementById('statAvgScore').textContent = '—';
         document.getElementById('statAvgTime').textContent = '—';
     }
 
-    // Leaderboard
-    renderLeaderboard(data);
-
-    // User cards
-    renderUserCards(data);
+    renderLeaderboard(submissions, liveScores);
+    renderUserCards(submissions, liveScores);
 }
 
-function renderLeaderboard(data) {
+function renderLeaderboard(submissions, liveScores) {
     const grid = document.getElementById('leaderboardGrid');
     const banner = document.getElementById('winnerBanner');
     let html = '';
 
+    const sData = getUserData('sanjita', submissions, liveScores);
+    const bData = getUserData('bimal', submissions, liveScores);
+
     ['sanjita', 'bimal'].forEach(u => {
-        const s = data[u];
-        if (s) {
-            const pct = Math.round((s.totalScore / s.maxScore) * 100);
-            const isWinner = data.sanjita && data.bimal && s.totalScore > data[u === 'sanjita' ? 'bimal' : 'sanjita'].totalScore;
+        const d = u === 'sanjita' ? sData : bData;
+        const otherD = u === 'sanjita' ? bData : sData;
+
+        if (d) {
+            const pct = Math.round((d.totalScore / d.maxScore) * 100);
+            const isLive = d.status === 'live';
+            const bothSubmitted = sData && bData && sData.status === 'submitted' && bData.status === 'submitted';
+            const isWinner = bothSubmitted && d.totalScore > (otherD ? otherD.totalScore : 0);
+
+            // Check for score change
+            const scoreChanged = prevScores[u] !== null && prevScores[u] !== d.totalScore;
+            prevScores[u] = d.totalScore;
+
+            const progressPct = isLive && d.totalCells ? Math.round((d.cellsFilled / d.totalCells) * 100) : 0;
+
             html += `
-                <div class="lb-card ${isWinner ? 'winner' : ''}">
-                    <div class="lb-rank">${isWinner ? '&#x1F451;' : '&#x1F3AF;'}</div>
+                <div class="lb-card ${isWinner ? 'winner' : ''} ${isLive ? 'live-card' : ''}">
+                    <div class="lb-rank">${isWinner ? '&#x1F451;' : isLive ? '&#x270D;&#xFE0F;' : '&#x1F3AF;'}</div>
                     <div class="lb-name">${capitalize(u)}</div>
-                    <div class="lb-score">${s.totalScore} / ${s.maxScore}</div>
-                    <div class="lb-pct">${pct}% &bull; ${formatTime(s.time)}</div>
+                    <div class="lb-score ${scoreChanged ? 'score-changed' : ''}">${d.totalScore} / ${d.maxScore}</div>
+                    <div class="lb-pct">${pct}% ${isLive ? '&bull; ' + formatTime(d.elapsed) : '&bull; ' + formatTime(d.time)}</div>
+                    <div class="lb-status-tag ${isLive ? 'live' : 'submitted'}">${isLive ? '&#x1F7E2; Typing Live' : '&#x2705; Submitted'}</div>
+                    ${isLive ? `
+                        <div class="lb-progress">
+                            <div class="lb-progress-track">
+                                <div class="lb-progress-fill" style="width:${progressPct}%"></div>
+                            </div>
+                            <div class="lb-progress-text">${d.cellsFilled}/${d.totalCells} cells filled</div>
+                        </div>
+                    ` : ''}
                 </div>
             `;
         } else {
+            prevScores[u] = null;
             html += `
                 <div class="lb-card waiting">
                     <div class="lb-rank">&#x23F3;</div>
                     <div class="lb-name">${capitalize(u)}</div>
                     <div class="lb-score">Waiting...</div>
-                    <div class="lb-pct">Not yet submitted</div>
+                    <div class="lb-pct">Not yet started</div>
                 </div>
             `;
         }
@@ -478,10 +555,10 @@ function renderLeaderboard(data) {
 
     grid.innerHTML = html;
 
-    // Winner banner
-    if (data.sanjita && data.bimal) {
-        const sa = data.sanjita.totalScore;
-        const bi = data.bimal.totalScore;
+    // Winner banner (only when both submitted)
+    if (sData && bData && sData.status === 'submitted' && bData.status === 'submitted') {
+        const sa = sData.totalScore;
+        const bi = bData.totalScore;
         if (sa > bi) {
             banner.innerHTML = '&#x1F389; Sanjita wins by ' + (sa - bi) + ' points!';
         } else if (bi > sa) {
@@ -494,35 +571,42 @@ function renderLeaderboard(data) {
     }
 }
 
-function renderUserCards(data) {
+function renderUserCards(submissions, liveScores) {
     const container = document.getElementById('userCards');
     let html = '';
 
     ['sanjita', 'bimal'].forEach(u => {
-        const s = data[u];
+        const d = getUserData(u, submissions, liveScores);
         const other = u === 'sanjita' ? 'bimal' : 'sanjita';
         const avatarLetter = u === 'sanjita' ? 'S' : 'B';
         const cardClass = u + '-card';
 
-        if (s) {
-            const pct = Math.round((s.totalScore / s.maxScore) * 100);
-            const ownPct = s.ownMaxPts > 0 ? Math.round((s.ownScore / s.ownMaxPts) * 100) : 0;
-            const otherPct = s.otherMaxPts > 0 ? Math.round((s.otherScore / s.otherMaxPts) * 100) : 0;
-            const submitted = new Date(s.submittedAt).toLocaleTimeString();
+        if (d) {
+            const isLive = d.status === 'live';
+            const pct = d.maxScore > 0 ? Math.round((d.totalScore / d.maxScore) * 100) : 0;
+            const progressPct = isLive && d.totalCells ? Math.round((d.cellsFilled / d.totalCells) * 100) : 100;
+            const timeLabel = isLive ? 'Elapsed' : 'Time';
+            const timeVal = isLive ? d.elapsed : d.time;
+            const statusTag = isLive
+                ? '<span class="user-card-status live">&#x1F7E2; Live</span>'
+                : '<span class="user-card-status submitted">&#x2705; Done</span>';
+            const subtitle = isLive
+                ? 'Currently taking exam...'
+                : 'Submitted at ' + new Date(d.submittedAt).toLocaleTimeString();
 
             html += `
-                <div class="user-card ${cardClass}">
+                <div class="user-card ${cardClass} ${isLive ? 'live-active' : ''}">
                     <div class="user-card-header">
                         <div class="user-avatar">${avatarLetter}</div>
                         <div>
-                            <div class="user-card-name">${capitalize(u)}</div>
-                            <div class="user-card-time">Submitted at ${submitted}</div>
+                            <div class="user-card-name">${capitalize(u)} ${statusTag}</div>
+                            <div class="user-card-time">${subtitle}</div>
                         </div>
                     </div>
                     <div class="user-detail-grid">
                         <div class="user-detail highlight">
                             <div class="ud-label">Total Score</div>
-                            <div class="ud-value">${s.totalScore} / ${s.maxScore}</div>
+                            <div class="ud-value">${d.totalScore} / ${d.maxScore}</div>
                         </div>
                         <div class="user-detail">
                             <div class="ud-label">Overall</div>
@@ -530,19 +614,28 @@ function renderUserCards(data) {
                         </div>
                         <div class="user-detail">
                             <div class="ud-label">Own (1pt)</div>
-                            <div class="ud-value">${s.ownScore}/${s.ownMaxPts}</div>
+                            <div class="ud-value">${d.ownScore}/${d.ownMaxPts}</div>
                         </div>
                         <div class="user-detail">
                             <div class="ud-label">${capitalize(other)}'s (2pt)</div>
-                            <div class="ud-value">${s.otherScore}/${s.otherMaxPts}</div>
+                            <div class="ud-value">${d.otherScore}/${d.otherMaxPts}</div>
                         </div>
                         <div class="user-detail">
-                            <div class="ud-label">Time</div>
-                            <div class="ud-value">${formatTime(s.time)}</div>
+                            <div class="ud-label">${timeLabel}</div>
+                            <div class="ud-value">${formatTime(timeVal)}</div>
                         </div>
                         <div class="user-detail">
                             <div class="ud-label">Cells Correct</div>
-                            <div class="ud-value">${s.ownCorrect + s.otherCorrect}/${s.ownTotal + s.otherTotal}</div>
+                            <div class="ud-value">${d.ownCorrect + d.otherCorrect}/${d.ownTotal + d.otherTotal}</div>
+                        </div>
+                    </div>
+                    <div class="user-progress">
+                        <div class="user-progress-label">
+                            <span>${isLive ? 'Exam Progress' : 'Completed'}</span>
+                            <span class="up-pct">${progressPct}%</span>
+                        </div>
+                        <div class="user-progress-track">
+                            <div class="user-progress-fill ${u}-fill" style="width:${progressPct}%"></div>
                         </div>
                     </div>
                 </div>
@@ -554,12 +647,12 @@ function renderUserCards(data) {
                         <div class="user-avatar">${avatarLetter}</div>
                         <div>
                             <div class="user-card-name">${capitalize(u)}</div>
-                            <div class="user-card-time">Hasn't submitted yet</div>
+                            <div class="user-card-time">Hasn't started yet</div>
                         </div>
                     </div>
                     <div class="waiting-message">
                         <div class="waiting-icon">&#x23F3;</div>
-                        Waiting for ${capitalize(u)} to submit...
+                        Waiting for ${capitalize(u)} to start...
                     </div>
                 </div>
             `;

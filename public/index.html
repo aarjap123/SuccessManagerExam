@@ -956,9 +956,9 @@ function buildTable(tbodyId, data, prefix) {
         tr.innerHTML = `
             <td>${row.sn}</td>
             <td>${escapeHtml(row.name)}</td>
-            <td><input type="text" class="exam-input" id="${prefix}_client_${idx}" placeholder="Client name" autocomplete="off" oninput="updateProgress()"></td>
-            <td><input type="text" class="exam-input" id="${prefix}_city_${idx}" placeholder="City, State" autocomplete="off" oninput="updateProgress()"></td>
-            <td><input type="text" class="exam-input" id="${prefix}_duration_${idx}" placeholder="e.g. 4 yrs 8 mos" autocomplete="off" oninput="updateProgress()"></td>
+            <td><input type="text" class="exam-input" id="${prefix}_client_${idx}" placeholder="Client name" autocomplete="off" oninput="onExamInput()"></td>
+            <td><input type="text" class="exam-input" id="${prefix}_city_${idx}" placeholder="City, State" autocomplete="off" oninput="onExamInput()"></td>
+            <td><input type="text" class="exam-input" id="${prefix}_duration_${idx}" placeholder="e.g. 4 yrs 8 mos" autocomplete="off" oninput="onExamInput()"></td>
         `;
         tbody.appendChild(tr);
     });
@@ -982,6 +982,62 @@ function updateProgress() {
     const pct = Math.round((filled / totalCells) * 100);
     document.getElementById("progressFill").style.width = pct + "%";
     document.getElementById("progressCount").textContent = filled + " / " + totalCells + " cells filled";
+    return filled;
+}
+
+// ==================== LIVE SCORING ====================
+let liveScoreTimer = null;
+
+function onExamInput() {
+    updateProgress();
+    clearTimeout(liveScoreTimer);
+    liveScoreTimer = setTimeout(sendLiveScore, 800);
+}
+
+function sendLiveScore() {
+    if (!currentUser) return;
+    const user = currentUser;
+    const other = user === 'sanjita' ? 'bimal' : 'sanjita';
+    const ptOwn = 1, ptOther = 2;
+
+    let ownScore = 0, ownCorrect = 0, otherScore = 0, otherCorrect = 0;
+    const ownTotal = examData[user].length * 3;
+    const otherTotal = examData[other].length * 3;
+
+    examData[user].forEach((row, i) => {
+        if (checkAnswer(document.getElementById("own_client_" + i).value, row.client, false, false)) { ownCorrect++; ownScore += ptOwn; }
+        if (checkAnswer(document.getElementById("own_city_" + i).value, row.city, false, true)) { ownCorrect++; ownScore += ptOwn; }
+        if (checkAnswer(document.getElementById("own_duration_" + i).value, row.duration, true, false)) { ownCorrect++; ownScore += ptOwn; }
+    });
+
+    examData[other].forEach((row, i) => {
+        if (checkAnswer(document.getElementById("other_client_" + i).value, row.client, false, false)) { otherCorrect++; otherScore += ptOther; }
+        if (checkAnswer(document.getElementById("other_city_" + i).value, row.city, false, true)) { otherCorrect++; otherScore += ptOther; }
+        if (checkAnswer(document.getElementById("other_duration_" + i).value, row.duration, true, false)) { otherCorrect++; otherScore += ptOther; }
+    });
+
+    const ownMaxPts = ownTotal * ptOwn;
+    const otherMaxPts = otherTotal * ptOther;
+    const totalScore = ownScore + otherScore;
+    const maxScore = ownMaxPts + otherMaxPts;
+
+    let cellsFilled = 0;
+    examData[user].forEach((_, i) => {
+        if (document.getElementById("own_client_" + i).value.trim()) cellsFilled++;
+        if (document.getElementById("own_city_" + i).value.trim()) cellsFilled++;
+        if (document.getElementById("own_duration_" + i).value.trim()) cellsFilled++;
+    });
+    examData[other].forEach((_, i) => {
+        if (document.getElementById("other_client_" + i).value.trim()) cellsFilled++;
+        if (document.getElementById("other_city_" + i).value.trim()) cellsFilled++;
+        if (document.getElementById("other_duration_" + i).value.trim()) cellsFilled++;
+    });
+
+    fetch('/api/live-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user, totalScore, maxScore, ownScore, ownMaxPts, otherScore, otherMaxPts, ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, elapsed: timerSeconds })
+    }).catch(() => {});
 }
 
 // ==================== TIMER ====================
@@ -1023,11 +1079,16 @@ function normalizeDuration(str) {
     return s;
 }
 
+function stripPlural(s) { return s.replace(/s$/, ""); }
+
 function checkAnswer(studentAns, correctAns, isDuration, isCity) {
     if (!studentAns.trim()) return false;
     if (isDuration) return normalizeDuration(studentAns) === normalizeDuration(correctAns);
     if (isCity) return normalizeCity(studentAns) === normalizeCity(correctAns);
-    return normalize(studentAns) === normalize(correctAns);
+    const a = normalize(studentAns), b = normalize(correctAns);
+    if (a === b) return true;
+    // Accept singular/plural variants (e.g. "communication" vs "communications")
+    return stripPlural(a) === stripPlural(b);
 }
 
 // ==================== SUBMIT ====================
