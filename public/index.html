@@ -271,7 +271,10 @@
 
         /* ===== LIVE SCORE TRACKER ===== */
         .score-tracker {
-            display: flex; gap: 12px; margin: 14px 0 6px; flex-wrap: wrap;
+            display: flex; gap: 12px; flex-wrap: wrap;
+            position: sticky; top: 0; z-index: 100;
+            background: white; margin: 0 -40px; padding: 12px 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         .score-tracker-item {
             display: flex; align-items: center; gap: 8px; padding: 10px 16px;
