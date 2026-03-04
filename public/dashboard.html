@@ -168,6 +168,17 @@
             font-weight: 700; color: var(--accent-light);
         }
 
+        /* Cell stats inside leaderboard cards */
+        .lb-cell-stats {
+            display: flex; justify-content: center; gap: 12px; margin-top: 8px;
+        }
+        .lb-cell-stat {
+            font-size: 0.78rem; font-weight: 700; padding: 3px 10px;
+            border-radius: 8px;
+        }
+        .lb-cell-correct { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+        .lb-cell-incorrect { background: rgba(239,68,68,0.2); color: #fca5a5; }
+
         /* Progress bar inside leaderboard cards */
         .lb-progress { margin-top: 8px; }
         .lb-progress-track {
@@ -530,6 +541,10 @@ function renderLeaderboard(submissions, liveScores) {
                     <div class="lb-score ${scoreChanged ? 'score-changed' : ''}">${d.totalScore} / ${d.maxScore}</div>
                     <div class="lb-pct">${pct}% ${isLive ? '&bull; ' + formatTime(d.elapsed) : '&bull; ' + formatTime(d.time)}</div>
                     <div class="lb-status-tag ${isLive ? 'live' : 'submitted'}">${isLive ? '&#x1F7E2; Typing Live' : '&#x2705; Submitted'}</div>
+                    <div class="lb-cell-stats">
+                        <span class="lb-cell-stat lb-cell-correct">&#x2705; ${isLive ? (d.cellsCorrect || 0) : (d.ownCorrect + d.otherCorrect)} correct</span>
+                        <span class="lb-cell-stat lb-cell-incorrect">&#x274C; ${isLive ? (d.cellsIncorrect || 0) : ((d.ownTotal + d.otherTotal) - (d.ownCorrect + d.otherCorrect))} incorrect</span>
+                    </div>
                     ${isLive ? `
                         <div class="lb-progress">
                             <div class="lb-progress-track">

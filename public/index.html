@@ -269,6 +269,26 @@
         }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
+        /* ===== LIVE SCORE TRACKER ===== */
+        .score-tracker {
+            display: flex; gap: 12px; margin: 14px 0 6px; flex-wrap: wrap;
+        }
+        .score-tracker-item {
+            display: flex; align-items: center; gap: 8px; padding: 10px 16px;
+            border-radius: 10px; font-weight: 700; font-size: 0.88rem;
+            flex: 1; min-width: 120px; transition: all 0.3s;
+        }
+        .score-tracker-item .st-icon { font-size: 1.1rem; }
+        .score-tracker-item .st-num {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.3rem;
+            font-weight: 900; transition: all 0.3s;
+        }
+        .score-tracker-item .st-label { font-size: 0.75rem; font-weight: 600; opacity: 0.8; }
+        .st-correct { background: var(--success-bg); color: #065f46; border: 1px solid rgba(16,185,129,0.2); }
+        .st-incorrect { background: var(--danger-bg); color: #991b1b; border: 1px solid rgba(239,68,68,0.2); }
+        .st-empty { background: var(--gray-50); color: var(--gray-500); border: 1px solid var(--gray-200); }
+        .st-points { background: var(--primary-bg); color: var(--primary-dark); border: 1px solid rgba(99,102,241,0.2); }
+
         /* ===== SECTION HEADER ===== */
         .section-divider {
             display: flex; align-items: center; gap: 14px; margin: 28px 0 14px; padding: 14px 20px;
@@ -583,6 +603,37 @@
                 </div>
             </div>
 
+            <div class="score-tracker">
+                <div class="score-tracker-item st-correct">
+                    <span class="st-icon">&#x2705;</span>
+                    <div>
+                        <div class="st-num" id="stCorrect">0</div>
+                        <div class="st-label">Correct</div>
+                    </div>
+                </div>
+                <div class="score-tracker-item st-incorrect">
+                    <span class="st-icon">&#x274C;</span>
+                    <div>
+                        <div class="st-num" id="stIncorrect">0</div>
+                        <div class="st-label">Incorrect</div>
+                    </div>
+                </div>
+                <div class="score-tracker-item st-empty">
+                    <span class="st-icon">&#x2B1C;</span>
+                    <div>
+                        <div class="st-num" id="stEmpty">0</div>
+                        <div class="st-label">Empty</div>
+                    </div>
+                </div>
+                <div class="score-tracker-item st-points">
+                    <span class="st-icon">&#x2B50;</span>
+                    <div>
+                        <div class="st-num" id="stPoints">0</div>
+                        <div class="st-label">Points</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Own candidates -->
             <div class="section-divider own-section">
                 <span id="ownSectionTitle">Your Candidates</span>
@@ -779,13 +830,13 @@ const examData = {
         {sn:7, name:"Srijana Tamang", client:"Apple", city:"Sunnyvale, California", duration:"4 yrs 8 mos"},
         {sn:8, name:"Shristi Malla", client:"Charter Communications", city:"Saint Peters, Missouri", duration:"3 yrs 3 mos"},
         {sn:9, name:"Shailesh Shrestha", client:"Centene Corporation", city:"Phoenix, Arizona", duration:"3 yrs 11 mos"},
-        {sn:10, name:"Sangam Basel", client:"Apple", city:"Austin, Texas", duration:"4 yrs 8 mos"},
+        {sn:10, name:"Sangam Basel", client:"Apple", city:"Austin, Texas", duration:"4 yrs 1 mos"},
         {sn:11, name:"Nirisha Shrestha", client:"Fannie Mae", city:"Carrollton, Texas", duration:"4 yrs 3 mos"},
         {sn:12, name:"Nabina Shrestha", client:"ALSAC", city:"Arlington, Texas", duration:"6 yrs 0 mos"},
         {sn:13, name:"Praswish Maharjan", client:"Morgan Stanley", city:"Woodside, New York", duration:"5 yrs 0 mos"},
         {sn:14, name:"Present Karmacharya", client:"Comcast + FM Global", city:"Graham, North Carolina", duration:"4 yrs 6 mos"},
         {sn:15, name:"Santosh Thapa", client:"Verra Mobility", city:"Garland, Texas", duration:"6 yrs 8 mos"},
-        {sn:16, name:"Dipesh Pathak", client:"PNC Bank", city:"Grand Prairie, Texas", duration:"0 yrs 6 mos"},
+        {sn:16, name:"Dipesh Pathak", client:"PNC Bank", city:"Grand Prairie, Texas", duration:"0 yrs 0 mos"},
         {sn:17, name:"Sajan Pokhrel", client:"KPMG Global", city:"Fort Worth, Texas", duration:"4 yrs 11 mos"},
         {sn:18, name:"Prayug Koirala", client:"T-Mobile", city:"New Orleans, Louisiana", duration:"3 yrs 9 mos"},
         {sn:19, name:"Ishwor Karki", client:"Credit One Bank", city:"Las Vegas, Nevada", duration:"4 yrs 1 mos"},
@@ -814,7 +865,7 @@ const examData = {
         {sn:13, name:"Keshav Aryal", client:"Morgan Stanley", city:"Atlanta, Georgia", duration:"6 yrs 2 mos"},
         {sn:14, name:"Yuzina Maharjan", client:"AT&T", city:"Dawsonville, Georgia", duration:"6 yrs 5 mos"},
         {sn:15, name:"Kiran Pandey", client:"DTCC", city:"Euless, Texas", duration:"5 yrs 3 mos"},
-        {sn:16, name:"Prajwal Khatiwada", client:"Standard Motor Products, Inc.", city:"Grand Prairie, Texas", duration:"6 yrs 0 mos"},
+        {sn:16, name:"Prajwal Khatiwada", client:"Standard Motor Products, Inc.", city:"Grand Prairie, Texas", duration:"6 yrs 4 mos"},
         {sn:17, name:"Pasang G. Lama Sherpa", client:"Google", city:"Mountain View, California", duration:"3 yrs 3 mos"},
         {sn:18, name:"Rojesh Thapa", client:"WellFit", city:"Irving, Texas", duration:"0 yrs 6 mos"},
         {sn:19, name:"Shweta Shahi", client:"Fineos", city:"Atlanta, Georgia", duration:"5 yrs 5 mos"},
@@ -990,8 +1041,47 @@ let liveScoreTimer = null;
 
 function onExamInput() {
     updateProgress();
+    highlightCells();
     clearTimeout(liveScoreTimer);
     liveScoreTimer = setTimeout(sendLiveScore, 800);
+}
+
+function highlightCells() {
+    if (!currentUser) return;
+    const user = currentUser;
+    const other = user === 'sanjita' ? 'bimal' : 'sanjita';
+    let correct = 0, incorrect = 0, empty = 0, points = 0;
+
+    function checkAndCount(id, correctAns, isDuration, isCity, ptValue) {
+        const el = document.getElementById(id);
+        const val = el.value.trim();
+        el.classList.remove('correct', 'incorrect');
+        if (!val) { empty++; return; }
+        if (checkAnswer(val, correctAns, isDuration, isCity)) {
+            el.classList.add('correct');
+            correct++;
+            points += ptValue;
+        } else {
+            el.classList.add('incorrect');
+            incorrect++;
+        }
+    }
+
+    examData[user].forEach((row, i) => {
+        checkAndCount("own_client_" + i, row.client, false, false, 1);
+        checkAndCount("own_city_" + i, row.city, false, true, 1);
+        checkAndCount("own_duration_" + i, row.duration, true, false, 1);
+    });
+    examData[other].forEach((row, i) => {
+        checkAndCount("other_client_" + i, row.client, false, false, 2);
+        checkAndCount("other_city_" + i, row.city, false, true, 2);
+        checkAndCount("other_duration_" + i, row.duration, true, false, 2);
+    });
+
+    document.getElementById('stCorrect').textContent = correct;
+    document.getElementById('stIncorrect').textContent = incorrect;
+    document.getElementById('stEmpty').textContent = empty;
+    document.getElementById('stPoints').textContent = points;
 }
 
 function sendLiveScore() {
@@ -1033,10 +1123,13 @@ function sendLiveScore() {
         if (document.getElementById("other_duration_" + i).value.trim()) cellsFilled++;
     });
 
+    const cellsCorrect = ownCorrect + otherCorrect;
+    const cellsIncorrect = cellsFilled - cellsCorrect;
+
     fetch('/api/live-score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user, totalScore, maxScore, ownScore, ownMaxPts, otherScore, otherMaxPts, ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, elapsed: timerSeconds })
+        body: JSON.stringify({ user, totalScore, maxScore, ownScore, ownMaxPts, otherScore, otherMaxPts, ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, cellsCorrect, cellsIncorrect, elapsed: timerSeconds })
     }).catch(() => {});
 }
 
@@ -1057,7 +1150,17 @@ function formatTime(sec) {
 }
 
 // ==================== SCORING HELPERS ====================
-function normalize(str) { return str.trim().toLowerCase().replace(/\s+/g, ""); }
+function normalize(str) {
+    let s = str.trim().toLowerCase();
+    s = s.replace(/,/g, "");
+    s = s.replace(/\bst\b\.?/g, "saint");
+    // Normalize HP variations
+    s = s.replace(/\bhp\s*\(.*?\)/g, "hp").replace(/\bhewlett\s*packard\b/g, "hp");
+    // Normalize JPMC variations
+    s = s.replace(/\bjpmorgan\s*chase\s*&?\s*co\.?\s*\(?\s*jpmc\s*\)?/g, "jpmc").replace(/\bjpmorgan\s*chase\b/g, "jpmc");
+    s = s.replace(/\s+/g, "");
+    return s;
+}
 
 function normalizeCity(str) {
     let s = str.trim().toLowerCase();
@@ -1067,15 +1170,17 @@ function normalizeCity(str) {
     let state = s.substring(commaIdx + 1).trim().replace(/\s+/g, "");
     if (abbrToState[state]) state = abbrToState[state];
     else if (stateAbbreviations[state]) state = state;
-    return city.replace(/\s+/g, "") + "," + state.replace(/\s+/g, "");
+    // Apply st/saint normalization to city part
+    city = city.replace(/\bst\b\.?/g, "saint").replace(/\s+/g, "");
+    return city + "," + state.replace(/\s+/g, "");
 }
 
 function normalizeDuration(str) {
     let s = normalize(str);
     s = s.replace(/\./g, "");
-    s = s.replace(/years?/g, "yrs").replace(/months?/g, "mos").replace(/yr\b/g, "yrs").replace(/mo\b/g, "mos");
-    const match = s.match(/(\d+)\s*yrs?\s*(\d+)\s*mos?/);
-    if (match) return match[1] + " yrs " + match[2] + " mos";
+    s = s.replace(/years?/g, "y").replace(/months?/g, "m").replace(/yrs/g, "y").replace(/mos/g, "m").replace(/yr/g, "y").replace(/mo/g, "m");
+    const match = s.match(/(\d+)\s*y\s*(\d+)\s*m/);
+    if (match) return match[1] + "y" + match[2] + "m";
     return s;
 }
 
