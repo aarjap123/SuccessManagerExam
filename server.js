@@ -17,13 +17,13 @@ const liveScores = {};
 // POST /api/live-score — real-time score updates while user is typing
 app.post('/api/live-score', (req, res) => {
     const { user, totalScore, maxScore, ownScore, ownMaxPts, otherScore, otherMaxPts,
-            ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, elapsed } = req.body;
+            ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, cellsCorrect, cellsIncorrect, elapsed } = req.body;
     if (!user || !['sanjita', 'bimal'].includes(user)) {
         return res.status(400).json({ error: 'Invalid user' });
     }
     liveScores[user] = {
         user, totalScore, maxScore, ownScore, ownMaxPts, otherScore, otherMaxPts,
-        ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, elapsed,
+        ownCorrect, ownTotal, otherCorrect, otherTotal, cellsFilled, totalCells, cellsCorrect, cellsIncorrect, elapsed,
         updatedAt: new Date().toISOString()
     };
     res.json({ ok: true });
